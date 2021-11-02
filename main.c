@@ -1,39 +1,32 @@
+#include "breakout.h"
+#include "callbacks.h"
 #include "glib2d.h"
-#include <pspdebug.h>
+#include "util.h"
+
+#include <intraFont.h>
+#include <pspctrl.h>
 #include <pspkernel.h>
+#include <stdlib.h>
 
-PSP_MODULE_INFO("psp-hello", 0, 1, 0);
+PSP_MODULE_INFO("PSPBreakout", 0, 1, 1);
+PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
+PSP_HEAP_SIZE_KB(-1024);
 
-int exit_callback(int arg1, int arg2, void *common) {
-    sceKernelExitGame();
-    return 0;
-}
-
-int CallbackThread(SceSize args, void *argp) {
-    int cbid = sceKernelCreateCallback("Exit Callback", exit_callback, NULL);
-    sceKernelRegisterExitCallback(cbid);
-    sceKernelSleepThreadCB();
-
-    return 0;
-}
-
-int SetupCallbacks(void) {
-    int thid = sceKernelCreateThread("update_thread", CallbackThread, 0x11,
-                                     0xFA0, 0, 0);
-    if (thid >= 0) sceKernelStartThread(thid, 0, 0);
-    return thid;
+void process_input(struct SceCtrlData *data) {
 }
 
 int main() {
-    SetupCallbacks();
-    GFX_init();
+    callbacks_setup();
+    intraFontInit();
+
+    Breakout_Board board = create_board(BLOCKS_X, BLOCKS_Y);
 
     while (1) {
-        GFX_clear(0x202020ff);
-
-        GFX_draw_rect(10, 10, 30, 30, 0xFF00FFFF);
-
-        GFX_swap_buffers();
-        sceDisplayWaitVblankStart();
+        g2dClear(BLACK);
+        draw_board(board, BLOCKS_X, BLOCKS_Y);
+        g2dFlip(G2D_VSYNC);
     }
+
+    sceKernelExitGame();
+    return 0;
 }

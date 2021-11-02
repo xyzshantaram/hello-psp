@@ -1,20 +1,17 @@
-TARGET = Gfx
-OBJS = main.o gfx.o
+TARGET = PSPBreakout
 
-CXXFLAGS = $(CFLAGS) -std=c++14 -fno-rtti
+OBJS = main.o glib2d.o callbacks.o breakout.o util.o
+LIBS = -lintrafont_psp -ljpeg -lpng -lz -lpspgum -lpspgu -lpsprtc -lm -lpspvram
+
+CFLAGS = -O2 -G0 -Wall
+CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS = $(CFLAGS)
 
-# PSP Stuff
-BUILD_PRX = 1
-PSP_FW_VERSION = 500
-PSP_LARGE_MEMORY = 1
-
 EXTRA_TARGETS = EBOOT.PBP
-PSP_EBOOT_TITLE = Tutorial
-#PSP_EBOOT_ICON = ICON0.PNG 
- 
+PSP_EBOOT_TITLE = gLib2D sample - clock
+
 PSPSDK=$(shell psp-config --pspsdk-path)
 include $(PSPSDK)/lib/build.mak
 
-run: all
+run: clean all
 	PPSSPPSDL ./EBOOT.PBP
