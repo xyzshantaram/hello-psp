@@ -2,7 +2,6 @@
 
 int callbacks_exit() {
     sceKernelExitGame();
-
     return 0;
 }
 

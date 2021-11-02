@@ -22,7 +22,7 @@ typedef struct board {
     Breakout_Block **rows;
 } Breakout_Board;
 
-void draw_board(Breakout_Board board, int nx, int ny);
+void draw_board(Breakout_Board *board);
 Breakout_Board create_board(int nx, int ny);
 
 #endif

@@ -1,9 +1,9 @@
 #include "breakout.h"
 
-void draw_board(Breakout_Board board, int nx, int ny) {
-    for (int y = 0; y < ny; y++) {
-        for (int x = 0; x < nx; x++) {
-            Breakout_Block tmp = board.rows[y][x];
+void draw_board(Breakout_Board *board) {
+    for (int y = 0; y < board->h; y++) {
+        for (int x = 0; x < board->w; x++) {
+            Breakout_Block tmp = board->rows[y][x];
             if (!tmp.broken) {
                 draw_rect(tmp.x, tmp.y, BLOCK_WIDTH, BLOCK_HEIGHT, BLOCK_COLOR);
             }
@@ -38,4 +38,9 @@ Breakout_Board create_board(int nx, int ny) {
     }
 
     return board;
+}
+
+void destroy_board(Breakout_Board *board) {
+    for (int y = 0; y < board->h; y++) free(board->rows[y]);
+    free(board->rows);
 }

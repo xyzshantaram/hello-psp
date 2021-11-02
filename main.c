@@ -23,10 +23,12 @@ int main() {
 
     while (1) {
         g2dClear(BLACK);
-        draw_board(board, BLOCKS_X, BLOCKS_Y);
+        draw_board(&board);
         g2dFlip(G2D_VSYNC);
     }
 
+    destroy_board(&board);
     sceKernelExitGame();
+
     return 0;
 }
