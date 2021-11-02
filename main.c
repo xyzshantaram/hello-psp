@@ -1,7 +1,8 @@
+#include "glib2d.h"
 #include <pspdebug.h>
 #include <pspkernel.h>
 
-PSP_MODULE_INFO("Tutorial", 0, 1, 0);
+PSP_MODULE_INFO("psp-hello", 0, 1, 0);
 
 int exit_callback(int arg1, int arg2, void *common) {
     sceKernelExitGame();
