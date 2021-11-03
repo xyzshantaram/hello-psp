@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define FONT_DIR "flash0:/font/ltn%d.pgf"
+#define FONT_LOCATION "flash0:/font/ltn%d.pgf"
 
 #define true 1
 #define false 0

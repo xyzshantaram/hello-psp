@@ -1,4 +1,11 @@
 #include "util.h"
+#include <math.h>
+
+void add_point(int x, int y, g2dColor color) {
+    g2dSetColor(color);
+    g2dSetCoordXY(x, y);
+    g2dAdd();
+}
 
 void fill_rect(int x, int y, int w, int h, g2dColor color) {
     g2dBeginRects(NULL); // No texture
@@ -12,16 +19,17 @@ void fill_rect(int x, int y, int w, int h, g2dColor color) {
 void stroke_rect(int x, int y, int w, int h, g2dColor color) {
 }
 
-void fill_circle(int x, int y, int r, g2dColor color) {
+void fill_circle(int cx, int cy, int r, g2dColor color) {
+    int radius = r;
+    g2dBeginPoints();
+    for (int y = -radius; y <= radius; y++)
+        for (int x = -radius; x <= radius; x++)
+            if (x * x + y * y < radius * radius + radius)
+                add_point(cx + x, cy + y, color);
+    g2dEnd();
 }
 
-void add_point(int x, int y, g2dColor color) {
-    g2dSetColor(color);
-    g2dSetCoordXY(x, y);
-    g2dAdd();
-}
-
-void circlePoints(int cx, int cy, int x, int y, int pix) {
+void circle_points(int cx, int cy, int x, int y, int pix) {
     if (x == 0) {
         add_point(cx, cy + y, pix);
         add_point(cx, cy - y, pix);
@@ -50,7 +58,7 @@ void stroke_circle(int cx, int cy, int r, g2dColor color) {
     int y = r;
     int p = (5 - r * 4) / 4;
 
-    circlePoints(cx, cy, x, y, color);
+    circle_points(cx, cy, x, y, color);
     while (x < y) {
         x++;
         if (p < 0) {
@@ -59,7 +67,7 @@ void stroke_circle(int cx, int cy, int r, g2dColor color) {
             y--;
             p += 2 * (x - y) + 1;
         }
-        circlePoints(cx, cy, x, y, color);
+        circle_points(cx, cy, x, y, color);
     }
     g2dEnd();
 }
@@ -71,4 +79,20 @@ g2dColor rgba(uint32_t color) {
     uint64_t a = (0xff & color);
 
     return G2D_RGBA(r, g, b, a);
+}
+
+_Bool circle_rect_collision(int cx, int cy, int r, int rx, int ry, int w,
+                            int h) {
+    int dx = abs(cx - rx);
+    int dy = abs(cy - ry);
+
+    if (dx > (w / 2 + r)) return false;
+    if (dy > (h / 2 + r)) return false;
+
+    if (dx <= (w / 2)) return true;
+    if (dy <= (h / 2)) return true;
+
+    int d_sq = (dx - w / 2) ^ 2 + (dy - h / 2) ^ 2;
+
+    return (d_sq <= (r ^ 2));
 }
