@@ -43,3 +43,12 @@ void destroy_board(Breakout_Board *board) {
     for (int y = 0; y < board->h; y++) free(board->rows[y]);
     free(board->rows);
 }
+
+Breakout_Paddle create_paddle() {
+    Breakout_Paddle paddle = {.x = SCREEN_WIDTH / 2 - PADDLE_WIDTH};
+    return paddle;
+}
+
+void draw_paddle(Breakout_Paddle *paddle) {
+    fill_rect(paddle->x, PADDLE_Y, PADDLE_WIDTH, PADDLE_HEIGHT, PADDLE_COLOR);
+}
