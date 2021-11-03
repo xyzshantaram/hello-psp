@@ -9,7 +9,12 @@
 
 #define true 1
 #define false 0
+#define SCREEN_WIDTH 480
+#define SCREEN_HEIGHT 272
 
-void draw_rect(int x, int y, int w, int h, g2dColor color);
+void fill_rect(int x, int y, int w, int h, g2dColor color);
+void stroke_rect(int x, int y, int w, int h, g2dColor color);
+void fill_circle(int x, int y, int r, g2dColor color);
+void stroke_circle(int cx, int cy, int r, g2dColor color);
 g2dColor rgba(uint32_t color);
 #endif

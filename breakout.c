@@ -1,11 +1,12 @@
 #include "breakout.h"
+#include "util.h"
 
 void draw_board(Breakout_Board *board) {
     for (int y = 0; y < board->h; y++) {
         for (int x = 0; x < board->w; x++) {
             Breakout_Block tmp = board->rows[y][x];
             if (!tmp.broken) {
-                draw_rect(tmp.x, tmp.y, BLOCK_WIDTH, BLOCK_HEIGHT, BLOCK_COLOR);
+                fill_rect(tmp.x, tmp.y, BLOCK_WIDTH, BLOCK_HEIGHT, BLOCK_COLOR);
             }
         }
     }
@@ -21,9 +22,7 @@ Breakout_Board create_board(int nx, int ny) {
     for (int y = 0; y < ny; y++) {
         board.rows[y] = malloc(sizeof(Breakout_Block[nx]));
 
-        int start_x =
-            (480 - ((BLOCK_WIDTH) + (nx - 1) * (BLOCK_WIDTH + BLOCK_MARGIN))) /
-            2;
+        int start_x = (SCREEN_WIDTH - (nx * (BLOCK_WIDTH + BLOCK_MARGIN))) / 2;
 
         for (int x = 0; x < nx; x++) {
             board.rows[y][x].x = start_x + x * BLOCK_WIDTH;
