@@ -22,32 +22,42 @@ typedef struct block {
     int x;
     int y;
     _Bool broken;
-} Breakout_Block;
+} breakout_Block;
 
 typedef struct board {
     int w;
     int h;
-    Breakout_Block **rows;
-} Breakout_Board;
+    breakout_Block **rows;
+} breakout_Board;
 
 typedef struct ball {
     int cx;
     int cy;
     int vx;
     int vy;
-} Breakout_Ball;
+} breakout_Ball;
 
 typedef struct paddle {
     int x;
-} Breakout_Paddle;
+} breakout_Paddle;
 
-void draw_ball(Breakout_Ball *ball, Breakout_Board *board,
-               Breakout_Paddle *paddle, _Bool started);
-void draw_board(Breakout_Board *board);
-void draw_paddle(Breakout_Paddle *paddle);
+typedef struct game {
+    breakout_Board board;
+    breakout_Ball ball;
+    breakout_Paddle paddle;
+    _Bool started;
+    _Bool won;
+    _Bool lost;
+    int n_cells;
+} breakout_State;
 
-Breakout_Ball create_ball();
-Breakout_Board create_board(int nx, int ny);
-Breakout_Paddle create_paddle();
+void draw_ball(breakout_State *game);
+void draw_board(breakout_Board *board);
+void draw_paddle(breakout_Paddle *paddle);
+
+breakout_Ball create_ball();
+breakout_Board create_board(int nx, int ny);
+breakout_Paddle create_paddle();
+void breakout_initialise(breakout_State *state);
 
 #endif

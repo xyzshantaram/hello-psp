@@ -8,75 +8,89 @@
 #include <pspctrl.h>
 #include <pspkernel.h>
 #include <stdlib.h>
+#include <string.h>
 
-PSP_MODULE_INFO("PSPBreakout", 0, 1, 1);
+PSP_MODULE_INFO("PSPbreakout", 0, 1, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(-1024);
 
-void process_input(struct SceCtrlData *data, Breakout_Paddle *paddle,
-                   _Bool *started) {
+void process_input(struct SceCtrlData *data, breakout_State *game) {
     sceCtrlReadBufferPositive(data, 1);
 
-    if (!(*started) && (data->Buttons & PSP_CTRL_CROSS)) {
-        *started = true;
+    if (!game->started && (data->Buttons & PSP_CTRL_CROSS)) {
+        game->started = true;
         return;
     }
-    if (data->Buttons & PSP_CTRL_LEFT) paddle->x -= PADDLE_SPEED;
+    if (data->Buttons & PSP_CTRL_LEFT) game->paddle.x -= PADDLE_SPEED;
     else if (data->Buttons & PSP_CTRL_RIGHT)
-        paddle->x += PADDLE_SPEED;
+        game->paddle.x += PADDLE_SPEED;
     else if (data->Lx != 128) {
         // get analog position as a number between -128 and 127
         float zeroed = data->Lx - 128;
         float final = round(zeroed / 128.0);
-        paddle->x += final * PADDLE_SPEED;
+        game->paddle.x += final * PADDLE_SPEED;
     }
 
-    paddle->x = clamp(paddle->x, 0, SCREEN_WIDTH - PADDLE_WIDTH);
+    game->paddle.x = clamp(game->paddle.x, 0, SCREEN_WIDTH - PADDLE_WIDTH);
 }
 
-void load_fonts(intraFont *(*ltn)[16]) {
+void load_latin_fonts(intraFont *(*arr)[16]) {
     char file[40];
     int i;
     for (i = 0; i < 16; i++) {
         sprintf(file, FONT_LOCATION, i);
         printf("Loading font %s\n", file);
-        (*ltn)[i] = intraFontLoad(file, 0);
-        intraFontSetStyle((*ltn)[i], 1.0f, WHITE, 0, 0.0f, 0);
+        (*arr)[i] = intraFontLoad(file, 0);
+        intraFontSetStyle((*arr)[i], 1.0f, WHITE, 0, 0.0f, 0);
     }
+}
+
+void draw_text_centered(intraFont *fnt, float ypos, const char *msg) {
+    if (!msg) return;
+    float length = intraFontMeasureText(fnt, msg);
+    float text_x = (SCREEN_WIDTH - length) / 2;
+    intraFontPrint(fnt, text_x, ypos, msg);
 }
 
 int main() {
     callbacks_setup();
     intraFontInit();
 
-    intraFont *ltn[16];
-    load_fonts(&ltn);
+    intraFont *latin_fonts[16];
+    load_latin_fonts(&latin_fonts);
 
-    Breakout_Board board = create_board(BLOCKS_X, BLOCKS_Y);
-    Breakout_Paddle paddle = create_paddle();
-    Breakout_Ball ball = create_ball(&paddle);
-    g2dColor BG = rgba(0x303030FF);
-    _Bool started = false;
+    breakout_State game;
+    breakout_initialise(&game);
+
+    g2dColor BG = rgba(0x202020FF);
 
     sceCtrlSetSamplingCycle(0);
     sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
 
     struct SceCtrlData padData;
 
-    float length = intraFontMeasureText(ltn[8], "Press X to start");
-    float text_x = (SCREEN_WIDTH - length) / 2;
-
     while (1) {
         g2dClear(BG);
-        process_input(&padData, &paddle, &started);
-        draw_board(&board);
-        draw_paddle(&paddle);
-        draw_ball(&ball, &board, &paddle, started);
-        if (!started) intraFontPrint(ltn[8], text_x, 120, "Press X to start");
+        process_input(&padData, &game);
+        if (!game.won && !game.lost) {
+            if (!game.started) {
+                draw_text_centered(latin_fonts[8], 120, "Press X to start");
+            }
+
+            draw_board(&game.board);
+            draw_paddle(&game.paddle);
+            draw_ball(&game);
+        } else if (game.won) {
+            draw_text_centered(latin_fonts[8], 120, "You won!");
+            game.started = false;
+        } else if (game.lost) {
+            draw_text_centered(latin_fonts[8], 120, "You lost!");
+            game.started = false;
+        }
         g2dFlip(G2D_VSYNC);
     }
-    destroy_board(&board);
-    for (int i = 0; i < 16; i++) intraFontUnload(ltn[i]);
+    destroy_board(&game.board);
+    for (int i = 0; i < 16; i++) intraFontUnload(latin_fonts[i]);
     sceKernelExitGame();
 
     return 0;
