@@ -18,13 +18,16 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(-1024);
 
 void process_input(breakout_State *game) {
-    struct SceCtrlData data;
-    sceCtrlReadBufferPositive(&data, 1);
+    SceCtrlLatch latch;
+    sceCtrlReadLatch(&latch);
 
-    if (data.Buttons & PSP_CTRL_START) {
+    if (latch.uiBreak & PSP_CTRL_START) {
         game->paused = !game->paused;
         return;
     }
+
+    SceCtrlData data;
+    sceCtrlReadBufferPositive(&data, 1);
 
     if (data.Buttons & PSP_CTRL_CIRCLE) {
         if (game->paused || game->lost || game->won) {
@@ -108,7 +111,6 @@ int main() {
             draw_text_centered(latin_fonts[8], 10,
                                "PAUSED - Press Start to unpause");
             draw_text_centered(latin_fonts[8], 30, "(O to quit)");
-            sceKernelDelayThread(2000); // delay for 2ms
         } else {
             if (!game.won && !game.lost) {
                 if (!game.started) {
