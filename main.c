@@ -93,16 +93,17 @@ int main() {
     sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
 
     u64 last_tick;
+    sceRtcGetCurrentTick(&last_tick);
 
     while (1) {
         // Framelimit code
         u32 res = sceRtcGetTickResolution();
-        u32 min_delta = res / TARGET_FPS;
+        double min_delta = res / TARGET_FPS;
         u64 this_tick;
         sceRtcGetCurrentTick(&this_tick);
-        u64 delta = this_tick - last_tick;
-        last_tick = this_tick;
+        double delta = this_tick - last_tick;
         if (delta < min_delta) continue;
+        last_tick = this_tick;
 
         g2dClear(BG);
         process_input(&game);
