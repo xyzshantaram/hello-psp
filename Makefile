@@ -9,6 +9,7 @@ ASFLAGS = $(CFLAGS)
 
 EXTRA_TARGETS = EBOOT.PBP
 PSP_EBOOT_TITLE = Breakout
+PSP_EBOOT_ICON = icon.png
 
 PSPSDK=$(shell psp-config --pspsdk-path)
 include $(PSPSDK)/lib/build.mak
