@@ -13,8 +13,14 @@ PSP_MODULE_INFO("PSPBreakout", 0, 1, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(-1024);
 
-void process_input(struct SceCtrlData *data, Breakout_Paddle *paddle) {
+void process_input(struct SceCtrlData *data, Breakout_Paddle *paddle,
+                   _Bool *started) {
     sceCtrlReadBufferPositive(data, 1);
+
+    if (!(*started) && (data->Buttons & PSP_CTRL_CROSS)) {
+        *started = true;
+        return;
+    }
     if (data->Buttons & PSP_CTRL_LEFT) paddle->x -= PADDLE_SPEED;
     else if (data->Buttons & PSP_CTRL_RIGHT)
         paddle->x += PADDLE_SPEED;
@@ -48,7 +54,7 @@ int main() {
 
     Breakout_Board board = create_board(BLOCKS_X, BLOCKS_Y);
     Breakout_Paddle paddle = create_paddle();
-    Breakout_Ball ball = create_ball();
+    Breakout_Ball ball = create_ball(&paddle);
     g2dColor BG = rgba(0x303030FF);
     _Bool started = false;
 
@@ -57,16 +63,18 @@ int main() {
 
     struct SceCtrlData padData;
 
+    float length = intraFontMeasureText(ltn[8], "Press X to start");
+    float text_x = (SCREEN_WIDTH - length) / 2;
+
     while (1) {
         g2dClear(BG);
-        process_input(&padData, &paddle);
+        process_input(&padData, &paddle, &started);
         draw_board(&board);
         draw_paddle(&paddle);
-        draw_ball(&ball, &paddle, started);
-        intraFontPrint(ltn[8], 10, 20, "Latin Sans-Serif:");
+        draw_ball(&ball, &board, &paddle, started);
+        if (!started) intraFontPrint(ltn[8], text_x, 120, "Press X to start");
         g2dFlip(G2D_VSYNC);
     }
-
     destroy_board(&board);
     for (int i = 0; i < 16; i++) intraFontUnload(ltn[i]);
     sceKernelExitGame();

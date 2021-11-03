@@ -11,7 +11,7 @@
 #define BLOCK_START_Y 40
 #define BLOCK_MARGIN 1
 #define BLOCK_COLOR rgba(0x007cdfff)
-#define BALL_RADIUS 2
+#define BALL_RADIUS 4
 #define PADDLE_WIDTH 40
 #define PADDLE_HEIGHT 10
 #define PADDLE_Y 225
@@ -41,7 +41,8 @@ typedef struct paddle {
     int x;
 } Breakout_Paddle;
 
-void draw_ball(Breakout_Ball *ball, Breakout_Paddle *paddle, _Bool started);
+void draw_ball(Breakout_Ball *ball, Breakout_Board *board,
+               Breakout_Paddle *paddle, _Bool started);
 void draw_board(Breakout_Board *board);
 void draw_paddle(Breakout_Paddle *paddle);
 

@@ -98,5 +98,5 @@ _Bool circle_rect_collision(int cx, int cy, int r, int rx, int ry, int w,
 
     int d_sq = (dx - w / 2) ^ 2 + (dy - h / 2) ^ 2;
 
-    return (d_sq <= (r ^ 2));
+    return (d_sq < (r ^ 2));
 }

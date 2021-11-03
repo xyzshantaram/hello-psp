@@ -53,11 +53,26 @@ void draw_paddle(Breakout_Paddle *paddle) {
     fill_rect(paddle->x, PADDLE_Y, PADDLE_WIDTH, PADDLE_HEIGHT, PADDLE_COLOR);
 }
 
-void update_ball(Breakout_Ball *ball, Breakout_Paddle *paddle, _Bool started) {
+void update_ball(Breakout_Ball *ball, Breakout_Board *board,
+                 Breakout_Paddle *paddle, _Bool started) {
     if (!started) {
         ball->cx = paddle->x + PADDLE_WIDTH / 2 - BALL_RADIUS;
-        ball->cy = PADDLE_Y - BALL_RADIUS;
         return;
+    }
+
+    for (int y = 0; y < board->h; y++) {
+        for (int x = 0; x < board->w; x++) {
+            if (circle_rect_collision(ball->cx, ball->cy, BALL_RADIUS,
+                                      board->rows[y][x].x, board->rows[y][x].y,
+                                      BLOCK_WIDTH, BLOCK_HEIGHT)) {
+                if (!board->rows[y][x].broken) {
+                    board->rows[y][x].broken = true;
+                    ball->vy *= -1;
+                }
+            } else {
+                continue;
+            }
+        }
     }
 
     if (circle_rect_collision(ball->cx, ball->cy, BALL_RADIUS, paddle->x,
@@ -67,16 +82,22 @@ void update_ball(Breakout_Ball *ball, Breakout_Paddle *paddle, _Bool started) {
 
     ball->cx += ball->vx;
     ball->cy += ball->vy;
+
+    if (ball->cx > SCREEN_WIDTH || ball->cx < 0) ball->vx *= -1;
+    if (ball->cy > SCREEN_HEIGHT || ball->cy < 0) ball->vy *= -1;
 }
 
-void draw_ball(Breakout_Ball *ball, Breakout_Paddle *paddle, _Bool started) {
-    update_ball(ball, paddle, started);
+void draw_ball(Breakout_Ball *ball, Breakout_Board *board,
+               Breakout_Paddle *paddle, _Bool started) {
+    update_ball(ball, board, paddle, started);
     fill_circle(ball->cx, ball->cy, BALL_RADIUS, YELLOW);
 }
 
 Breakout_Ball create_ball(Breakout_Paddle *paddle) {
     Breakout_Ball ball = {.cx = paddle->x + PADDLE_WIDTH / 2 - BALL_RADIUS,
-                          .cy = PADDLE_Y - BALL_RADIUS,
-                          .vx = 0,
-                          .vy = 0};
+                          .cy = PADDLE_Y - BALL_RADIUS - 2,
+                          .vx = 2,
+                          .vy = 2};
+
+    return ball;
 }
