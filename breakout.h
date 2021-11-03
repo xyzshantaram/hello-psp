@@ -16,7 +16,7 @@
 #define PADDLE_HEIGHT 10
 #define PADDLE_Y 225
 #define PADDLE_COLOR rgba(0x663399ff)
-#define PADDLE_SPEED 4
+#define PADDLE_SPEED 6
 
 typedef struct block {
     int x;
@@ -48,6 +48,8 @@ typedef struct game {
     _Bool started;
     _Bool won;
     _Bool lost;
+    _Bool paused;
+    _Bool quit;
     int n_cells;
 } breakout_State;
 

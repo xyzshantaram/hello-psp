@@ -112,4 +112,6 @@ void breakout_initialise(breakout_State *state) {
     state->won = false;
     state->lost = false;
     state->n_cells = state->board.w * state->board.h;
+    state->paused = false;
+    state->quit = false;
 }
