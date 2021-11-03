@@ -1,6 +1,12 @@
 #include "util.h"
 #include <math.h>
 
+int clamp(int val, int min, int max) {
+    if (val < min) return min;
+    if (val > max) return max;
+    return val;
+}
+
 void add_point(int x, int y, g2dColor color) {
     g2dSetColor(color);
     g2dSetCoordXY(x, y);

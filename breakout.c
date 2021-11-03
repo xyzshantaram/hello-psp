@@ -17,7 +17,7 @@ Breakout_Board create_board(int nx, int ny) {
 
     board.rows = malloc(ny * sizeof(Breakout_Block *));
 
-    int start_y = 28;
+    int start_y = BLOCK_START_Y;
 
     for (int y = 0; y < ny; y++) {
         board.rows[y] = malloc(sizeof(Breakout_Block[nx]));

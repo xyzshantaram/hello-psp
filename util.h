@@ -12,6 +12,7 @@
 #define SCREEN_WIDTH 480
 #define SCREEN_HEIGHT 272
 
+int clamp(int val, int min, int max);
 void fill_rect(int x, int y, int w, int h, g2dColor color);
 void stroke_rect(int x, int y, int w, int h, g2dColor color);
 void fill_circle(int x, int y, int r, g2dColor color);

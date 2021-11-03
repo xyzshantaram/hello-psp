@@ -8,13 +8,15 @@
 #define BLOCK_WIDTH 20
 #define BLOCKS_X 18
 #define BLOCKS_Y 4
+#define BLOCK_START_Y 40
 #define BLOCK_MARGIN 1
 #define BLOCK_COLOR rgba(0x007cdfff)
 #define BALL_RADIUS 2
 #define PADDLE_WIDTH 40
 #define PADDLE_HEIGHT 10
-#define PADDLE_Y 240
+#define PADDLE_Y 225
 #define PADDLE_COLOR rgba(0x663399ff)
+#define PADDLE_SPEED 4
 
 typedef struct block {
     int x;

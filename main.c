@@ -4,6 +4,7 @@
 #include "util.h"
 
 #include <intraFont.h>
+#include <math.h>
 #include <pspctrl.h>
 #include <pspkernel.h>
 #include <stdlib.h>
@@ -13,6 +14,18 @@ PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(-1024);
 
 void process_input(struct SceCtrlData *data, Breakout_Paddle *paddle) {
+    sceCtrlReadBufferPositive(data, 1);
+    if (data->Buttons & PSP_CTRL_LEFT) paddle->x -= PADDLE_SPEED;
+    else if (data->Buttons & PSP_CTRL_RIGHT)
+        paddle->x += PADDLE_SPEED;
+    else if (data->Lx != 128) {
+        // get analog position as a number between -128 and 127
+        float zeroed = data->Lx - 128;
+        float final = round(zeroed / 128.0);
+        paddle->x += final * PADDLE_SPEED;
+    }
+
+    paddle->x = clamp(paddle->x, 0, SCREEN_WIDTH - PADDLE_WIDTH);
 }
 
 void load_fonts(intraFont *(*ltn)[16]) {
@@ -38,12 +51,17 @@ int main() {
     g2dColor BG = rgba(0x303030FF);
     _Bool started = false;
 
+    sceCtrlSetSamplingCycle(0);
+    sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
+
+    struct SceCtrlData padData;
+
     while (1) {
         g2dClear(BG);
+        process_input(&padData, &paddle);
         draw_board(&board);
         draw_paddle(&paddle);
         intraFontPrint(ltn[8], 10, 20, "Latin Sans-Serif:");
-        fill_circle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 40, BLUE);
         g2dFlip(G2D_VSYNC);
     }
 
