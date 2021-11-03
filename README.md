@@ -1,7 +1,9 @@
-# psp_hello_world
+# PSPBreakout
 
-Experiments with the Sony PSP.
+A breakout clone written for the Sony PSP.
 
 ### Acknowledgements
 
-This project uses glib2d under the terms of the GNU LGPL.
+This project uses glib2d by @libgc under the terms of the GNU LGPL.
+
+This project also uses IntraFont by Ben Hur.
