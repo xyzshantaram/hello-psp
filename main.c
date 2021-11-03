@@ -48,6 +48,7 @@ int main() {
 
     Breakout_Board board = create_board(BLOCKS_X, BLOCKS_Y);
     Breakout_Paddle paddle = create_paddle();
+    Breakout_Ball ball = create_ball();
     g2dColor BG = rgba(0x303030FF);
     _Bool started = false;
 
@@ -61,6 +62,7 @@ int main() {
         process_input(&padData, &paddle);
         draw_board(&board);
         draw_paddle(&paddle);
+        draw_ball(&ball, &paddle, started);
         intraFontPrint(ltn[8], 10, 20, "Latin Sans-Serif:");
         g2dFlip(G2D_VSYNC);
     }

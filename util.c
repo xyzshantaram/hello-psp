@@ -26,12 +26,10 @@ void stroke_rect(int x, int y, int w, int h, g2dColor color) {
 }
 
 void fill_circle(int cx, int cy, int r, g2dColor color) {
-    int radius = r;
     g2dBeginPoints();
-    for (int y = -radius; y <= radius; y++)
-        for (int x = -radius; x <= radius; x++)
-            if (x * x + y * y < radius * radius + radius)
-                add_point(cx + x, cy + y, color);
+    for (int y = -r; y <= r; y++)
+        for (int x = -r; x <= r; x++)
+            if (x * x + y * y < r * r + r) add_point(cx + x, cy + y, color);
     g2dEnd();
 }
 

@@ -41,9 +41,12 @@ typedef struct paddle {
     int x;
 } Breakout_Paddle;
 
+void draw_ball(Breakout_Ball *ball, Breakout_Paddle *paddle, _Bool started);
 void draw_board(Breakout_Board *board);
 void draw_paddle(Breakout_Paddle *paddle);
-Breakout_Paddle create_paddle();
+
+Breakout_Ball create_ball();
 Breakout_Board create_board(int nx, int ny);
+Breakout_Paddle create_paddle();
 
 #endif
