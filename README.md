@@ -1,4 +1,4 @@
-# hello_psp
+# hello-psp
 
 A breakout clone written for the Sony PSP. Made to familiarize myself somewhat with working with the console.
 
